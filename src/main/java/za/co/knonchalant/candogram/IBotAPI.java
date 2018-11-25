@@ -1,5 +1,6 @@
 package za.co.knonchalant.candogram;
 
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import za.co.knonchalant.candogram.handlers.IInlineHandler;
@@ -22,15 +23,17 @@ public interface IBotAPI {
 
     List<IUpdate> getUpdates(Integer limit);
 
-    void sendMessage(IUpdate message, String text, Object... args);
+    int sendMessage(IUpdate message, String text, Object... args);
 
-    void sendMessage(IUpdate message, String text);
+    int sendMessage(IUpdate message, String text);
 
-    void sendMessageWithKeyboard(IUpdate update, List<List<String>> keyboardList, String text);
+    int sendMessageWithKeyboard(IUpdate update, List<List<String>> keyboardList, String text);
 
     boolean typing(IUpdate update);
 
-    void sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard);
+    int sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard);
+
+    void updateMessage(Long chatId, String message, Integer messageId, InlineKeyboardMarkup keyboard);
 
     void setOffset(int updateId);
 

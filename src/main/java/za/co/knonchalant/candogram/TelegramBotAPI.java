@@ -96,22 +96,23 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public void sendMessage(IUpdate message, String text, Object... args) {
-        sendTheMessage(new SendMessage(message.getChatId(), String.format(text, args)).parseMode(ParseMode.Markdown));
+    public int sendMessage(IUpdate message, String text, Object... args) {
+        return sendTheMessage(new SendMessage(message.getChatId(), String.format(text, args)).parseMode(ParseMode.Markdown));
     }
 
 
     @Override
-    public void sendMessage(IUpdate message, String text) {
-        sendTheMessage(new SendMessage(message.getChatId(), text).parseMode(ParseMode.Markdown));
+    public int sendMessage(IUpdate message, String text) {
+        return sendTheMessage(new SendMessage(message.getChatId(), text).parseMode(ParseMode.Markdown));
     }
 
     @Override
-    public void sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard) {
+    public int sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard) {
 
         if (parseMode == null) {
             parseMode = ParseMode.Markdown;
         }
+
         SendMessage sendMessage = new SendMessage(chatId, message)
                 .parseMode(parseMode)
                 .disableWebPagePreview(disableWebPagePreview);
@@ -125,24 +126,40 @@ public class TelegramBotAPI implements IBotAPI {
                     .replyToMessageId(messageId);
         }
 
-        sendTheMessage(sendMessage);
+        return sendTheMessage(sendMessage);
     }
 
-    private void sendTheMessage(SendMessage sendMessage) {
-        SendResponse execute = bot.execute(sendMessage);
+    @Override
+    public void updateMessage(Long chatId, String message, Integer messageId, InlineKeyboardMarkup keyboard) {
+        EditMessageReplyMarkup sendMessage = new EditMessageReplyMarkup(chatId, messageId, message);
+        if (keyboard != null) {
+            sendMessage = sendMessage.replyMarkup(keyboard);
+        }
+
+        BaseResponse execute = bot.execute(sendMessage);
         if (!execute.isOk()) {
             System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
         }
     }
 
+    private int sendTheMessage(SendMessage sendMessage) {
+        SendResponse execute = bot.execute(sendMessage);
+
+        if (!execute.isOk()) {
+            System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
+            return -1;
+        }
+        return execute.message().messageId();
+    }
+
     @Override
-    public void sendMessageWithKeyboard(IUpdate message, List<List<String>> keyboardList, String text) {
+    public int sendMessageWithKeyboard(IUpdate message, List<List<String>> keyboardList, String text) {
         SendMessage sendMessage = new SendMessage(message.getChatId(), text)
                 .parseMode(ParseMode.Markdown)
                 .replyMarkup(defaultKeyboard(keyboardList))
                 .replyToMessageId((int) message.getId());
 
-        sendTheMessage(sendMessage);
+        return sendTheMessage(sendMessage);
     }
 
     protected Keyboard defaultKeyboard(List<List<String>> keyboardList) {
