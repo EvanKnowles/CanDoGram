@@ -15,14 +15,26 @@ public class TelegramUpdate implements IUpdate {
 
     @Override
     public String getText() {
+        if (update.callbackQuery() != null && update.callbackQuery().data() != null) {
+            return update.callbackQuery().data();
+        }
+
         return update.message() != null ? update.message().text() : update.inlineQuery().query();
     }
 
     @Override
     public User getUser() {
-        com.pengrad.telegrambot.model.User user = update.message() != null ? update.message().from() : update.inlineQuery().from();
+        com.pengrad.telegrambot.model.User user = getUserFromUpdate();
 
         return new User(user.id(), user.username(), user.firstName(), user.lastName());
+    }
+
+    private com.pengrad.telegrambot.model.User getUserFromUpdate() {
+        if (update.callbackQuery() != null) {
+            return update.callbackQuery().from();
+        }
+
+        return update.message() != null ? update.message().from() : update.inlineQuery().from();
     }
 
     @Override
@@ -40,7 +52,7 @@ public class TelegramUpdate implements IUpdate {
 
     @Override
     public String getInlineId() {
-        if (isInline()){
+        if (isInline()) {
             return update.inlineQuery().id();
         }
         return null;
@@ -53,6 +65,9 @@ public class TelegramUpdate implements IUpdate {
 
     @Override
     public long getChatId() {
+        if (update.callbackQuery() != null && update.callbackQuery().message() != null) {
+            return update.callbackQuery().message().chat().id();
+        }
         return update.message() != null ? update.message().chat().id() : -1;
     }
 

@@ -41,7 +41,7 @@ public class HandlerBot {
             }
         }
 
-        clearPending(update);
+//        clearPending(update);
 
         for (IMessageHandler iMessageHandler : iMessageHandlers) {
             try {
@@ -101,8 +101,19 @@ public class HandlerBot {
 
             if (details.getStep() == iResponseHandler.getStep() && pendingResponse.getIdentifier().equals(iResponseHandler.getIdentifier())) {
                 iResponseHandler.setBot(bot);
+                pendingResponse.setStepRetry(false);
+                pendingResponse.setStepHandled(false);
+
                 PendingResponse resultResponse = iResponseHandler.handleResponse(update, details, pendingResponse);
-                return resultResponse.isComplete();
+
+                if (resultResponse.isStepHandled()) {
+                    details.nextStep();
+                }
+                resultResponse.setDetails(details);
+
+                telegramDAO.persistPendingResponse(resultResponse);
+
+                return resultResponse.isComplete() || resultResponse.isStepHandled() || resultResponse.isStepRetry();
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Handle response issue.", ex);

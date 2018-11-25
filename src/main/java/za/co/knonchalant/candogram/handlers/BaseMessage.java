@@ -35,7 +35,6 @@ public abstract class BaseMessage {
         this.noargs = noargs;
     }
 
-
     protected boolean typing(IUpdate update) {
         return getBot().typing(update);
     }
@@ -50,7 +49,6 @@ public abstract class BaseMessage {
 
     protected void sendMessage(IUpdate message, String text) {
         bot.sendMessage(message, text);
-
     }
 
     protected void sendMessageWithKeyboard(IUpdate update, List<List<String>> keyboardList, String text) {

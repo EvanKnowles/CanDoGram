@@ -22,6 +22,9 @@ public class PendingResponse {
     private boolean complete;
     private String details;
 
+    private transient boolean stepHandled;
+    private transient boolean stepRetry;
+
     public PendingResponse() {
     }
 
@@ -88,6 +91,16 @@ public class PendingResponse {
         return this;
     }
 
+    public PendingResponse handled() {
+        setStepHandled(true);
+        return this;
+    }
+
+    public PendingResponse retry() {
+        setStepRetry(true);
+        return this;
+    }
+
     @Column(columnDefinition = "LONGTEXT", length = 10_000)
     public String getDetails() {
         return details;
@@ -100,5 +113,21 @@ public class PendingResponse {
     public void setDetails(BaseDetail details) {
         Gson gson = new Gson();
         this.details = gson.toJson(details);
+    }
+
+    public boolean isStepHandled() {
+        return stepHandled;
+    }
+
+    public void setStepHandled(boolean stepHandled) {
+        this.stepHandled = stepHandled;
+    }
+
+    public boolean isStepRetry() {
+        return stepRetry;
+    }
+
+    public void setStepRetry(boolean stepRetry) {
+        this.stepRetry = stepRetry;
     }
 }

@@ -20,4 +20,8 @@ public class BaseDetail {
     public void setStep(int step) {
         this.step = step;
     }
+
+    public void nextStep() {
+        step++;
+    }
 }
