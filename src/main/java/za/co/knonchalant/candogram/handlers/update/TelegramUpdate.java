@@ -60,6 +60,10 @@ public class TelegramUpdate implements IUpdate {
 
     @Override
     public long getMessageId() {
+        if (update.callbackQuery() != null) {
+            return update.callbackQuery().message().messageId();
+        }
+
         return update.message().messageId();
     }
 
