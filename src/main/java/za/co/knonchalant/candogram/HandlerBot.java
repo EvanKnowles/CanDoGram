@@ -41,8 +41,6 @@ public class HandlerBot {
             }
         }
 
-//        clearPending(update);
-
         for (IMessageHandler iMessageHandler : iMessageHandlers) {
             try {
                 handle(iMessageHandler, update);

@@ -77,6 +77,10 @@ public class TelegramUpdate implements IUpdate {
 
     @Override
     public String getTitle() {
+        if (update.callbackQuery() != null && update.callbackQuery().message() != null) {
+            return update.callbackQuery().message().chat().title();
+        }
+
         return update.message().chat().title();
     }
 

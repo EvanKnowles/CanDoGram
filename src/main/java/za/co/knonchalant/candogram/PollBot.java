@@ -3,7 +3,7 @@ package za.co.knonchalant.candogram;
 import za.co.knonchalant.candogram.handlers.IUpdate;
 
 import javax.ejb.*;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +41,7 @@ public class PollBot implements ShutdownNotify, IBot {
     private void processBot(Bots bots) {
         try {
             for (IBotAPI bot : bots.getApis()) {
-                List<IUpdate> updates = bot.getUpdates(1);
+                Collection<IUpdate> updates = onlyLast(bot.getUpdates(100));
 
                 for (IUpdate update : updates) {
                     bot.setOffset((int) (update.getId() + 1));
@@ -51,6 +51,15 @@ public class PollBot implements ShutdownNotify, IBot {
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Update exception", ex);
         }
+    }
+
+    private Collection<IUpdate> onlyLast(List<IUpdate> updates) {
+        Map<Long, IUpdate> mostRecent = new HashMap<>();
+        for (IUpdate update : updates) {
+            mostRecent.put(update.getUser().getId(), update);
+        }
+
+        return mostRecent.values();
     }
 
     public Bots find(String name) {
