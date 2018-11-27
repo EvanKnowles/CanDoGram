@@ -61,11 +61,6 @@ public class HandlerBot {
     private boolean tryHandleAsResponse(IUpdate update, List<IMessageHandler> iMessageHandlers, IBotAPI bot) {
         List<PendingResponse> pendingResponses = telegramDAO.getPendingResponses(update.getUser().getId(), update.getChatId());
 
-        if (pendingResponses.size() > 1) {
-            LOGGER.info("Fastforwarding responses...");
-
-        }
-
         for (PendingResponse pendingResponse : pendingResponses) {
             for (IMessageHandler iMessageHandler : iMessageHandlers) {
                 try {
