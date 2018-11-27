@@ -14,4 +14,6 @@ public interface IUpdate {
     public Location getLocation();
 
     public boolean isInline();
+
+    boolean skip();
 }

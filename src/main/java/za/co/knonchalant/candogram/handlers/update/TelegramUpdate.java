@@ -98,5 +98,10 @@ public class TelegramUpdate implements IUpdate {
         return update.inlineQuery() != null;
     }
 
+    @Override
+    public boolean skip() {
+        return (update.editedMessage() != null);
+    }
+
 
 }

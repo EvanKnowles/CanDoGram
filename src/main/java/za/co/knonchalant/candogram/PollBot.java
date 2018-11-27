@@ -56,6 +56,10 @@ public class PollBot implements ShutdownNotify, IBot {
     private Collection<IUpdate> onlyLast(List<IUpdate> updates) {
         Map<Long, IUpdate> mostRecent = new HashMap<>();
         for (IUpdate update : updates) {
+            if (update.skip()) {
+                continue;
+            }
+
             mostRecent.put(update.getUser().getId(), update);
         }
 
