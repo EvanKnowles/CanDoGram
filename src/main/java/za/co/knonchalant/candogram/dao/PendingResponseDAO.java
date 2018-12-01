@@ -29,4 +29,8 @@ public class PendingResponseDAO {
         query.setParameter("userId", userId);
         return query.getResultList();
     }
+
+    public void delete(PendingResponse pendingResponse) {
+        em.remove(pendingResponse);
+    }
 }

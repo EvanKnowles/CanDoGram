@@ -104,7 +104,11 @@ public class HandlerBot {
                 }
                 resultResponse.setDetails(details);
 
-                telegramDAO.persistPendingResponse(resultResponse);
+                if (resultResponse.isComplete()) {
+                    telegramDAO.persistPendingResponse(resultResponse);
+                } else {
+                    telegramDAO.delete(pendingResponse);
+                }
 
                 return resultResponse.isComplete() || resultResponse.isStepHandled() || resultResponse.isStepRetry();
             }
