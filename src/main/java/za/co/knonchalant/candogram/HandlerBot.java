@@ -54,7 +54,7 @@ public class HandlerBot {
         List<PendingResponse> pendingResponses = telegramDAO.getPendingResponses(update.getUser().getId(), update.getChatId());
 
         for (PendingResponse pendingResponse : pendingResponses) {
-            telegramDAO.markDone(pendingResponse);
+            telegramDAO.delete(pendingResponse);
         }
     }
 
@@ -104,10 +104,10 @@ public class HandlerBot {
                 }
                 resultResponse.setDetails(details);
 
-                if (resultResponse.isComplete()) {
+                if (!resultResponse.isComplete()) {
                     telegramDAO.persistPendingResponse(resultResponse);
                 } else {
-                    telegramDAO.delete(pendingResponse);
+                    clearPending(update);
                 }
 
                 return resultResponse.isComplete() || resultResponse.isStepHandled() || resultResponse.isStepRetry();

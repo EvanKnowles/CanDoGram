@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
  * Created by evan on 2016/04/08.
  */
 public class TelegramBotAPI implements IBotAPI {
+    private static final long ONE_HOUR = 60*15;
+
     private TelegramBot bot;
     private List<IMessageHandler> iMessageHandlers = new ArrayList<>();
     private int offset;
@@ -33,8 +35,8 @@ public class TelegramBotAPI implements IBotAPI {
         this.name = name;
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(ONE_HOUR, TimeUnit.SECONDS)
                 .build();
 
         TelegramBot bot = TelegramBotAdapter.buildCustom(name, client);
