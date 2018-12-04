@@ -47,7 +47,7 @@ public abstract class BaseMessage {
         bot.sendMessage(message, text, args);
     }
 
-    protected void sendMessage(IUpdate message, String text) {
+    public void sendMessage(IUpdate message, String text) {
         bot.sendMessage(message, text);
     }
 
