@@ -175,7 +175,7 @@ public class TelegramBotAPI implements IBotAPI {
             return;
         }
 
-        execute.message().messageId();
+        execute.message();
     }
 
     private void sendBacklog(Long chatId) {
