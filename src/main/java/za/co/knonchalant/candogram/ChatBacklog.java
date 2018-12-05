@@ -18,7 +18,7 @@ public class ChatBacklog {
         long time = lastSent.getTime() + 1000;
         Date date = new Date();
 
-        return date.getTime() - time;
+        return time - date.getTime();
     }
 
     public void add(SendMessage sendMessage) {
