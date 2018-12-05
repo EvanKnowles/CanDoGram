@@ -15,8 +15,7 @@ import za.co.knonchalant.candogram.handlers.IUpdate;
 import za.co.knonchalant.candogram.handlers.User;
 import za.co.knonchalant.candogram.handlers.update.TelegramUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,6 +29,8 @@ public class TelegramBotAPI implements IBotAPI {
     private int offset;
     private IInlineHandler inlineHandler;
     private String name;
+
+    private final Map<Long, ChatBacklog> backlog = new HashMap<>();
 
     public TelegramBotAPI(String name, String apiKey) {
         this.name = name;
@@ -98,18 +99,18 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public int sendMessage(IUpdate message, String text, Object... args) {
-        return sendTheMessage(new SendMessage(message.getChatId(), String.format(text, args)).parseMode(ParseMode.Markdown));
+    public void sendMessage(IUpdate message, String text, Object... args) {
+        sendTheMessage(new SendMessage(message.getChatId(), String.format(text, args)).parseMode(ParseMode.Markdown));
     }
 
 
     @Override
-    public int sendMessage(IUpdate message, String text) {
-        return sendTheMessage(new SendMessage(message.getChatId(), text).parseMode(ParseMode.Markdown));
+    public void sendMessage(IUpdate message, String text) {
+        sendTheMessage(new SendMessage(message.getChatId(), text).parseMode(ParseMode.Markdown));
     }
 
     @Override
-    public int sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard) {
+    public void sendMessage(Long chatId, String message, ParseMode parseMode, boolean disableWebPagePreview, Integer messageId, Keyboard keyboard) {
 
         if (parseMode == null) {
             parseMode = ParseMode.Markdown;
@@ -128,7 +129,7 @@ public class TelegramBotAPI implements IBotAPI {
                     .replyToMessageId(messageId);
         }
 
-        return sendTheMessage(sendMessage);
+        sendTheMessage(sendMessage);
     }
 
     @Override
@@ -144,27 +145,86 @@ public class TelegramBotAPI implements IBotAPI {
         }
     }
 
-    private int sendTheMessage(SendMessage sendMessage) {
+    private void sendTheMessage(SendMessage sendMessage) {
+        Object chat_idObj = sendMessage.getParameters().get("chat_id");
+        Long chatId = Long.parseLong(chat_idObj.toString());
+
+        if (!backlog.containsKey(chatId)) {
+            synchronized (backlog) {
+                if (!backlog.containsKey(chatId)) {
+                    backlog.put(chatId, new ChatBacklog());
+                }
+            }
+        }
+
+        ChatBacklog sendMessages = backlog.get(chatId);
+
+        // IntelliJ is freaking out, but I think it's fine
+        synchronized (sendMessages) {
+            sendMessages.add(sendMessage);
+        }
+
+        sendBacklog(chatId);
+    }
+
+    private void sendOneMessage(SendMessage sendMessage) {
         SendResponse execute = bot.execute(sendMessage);
 
         if (!execute.isOk()) {
             System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
-            return -1;
+            return;
         }
-        return execute.message().messageId();
+
+        execute.message().messageId();
+    }
+
+    private void sendBacklog(Long chatId) {
+        List<SendMessage> thisLog;
+        ChatBacklog sendMessages = backlog.get(chatId);
+
+        if (!backlog.containsKey(chatId) || sendMessages.isEmpty()) {
+            return;
+        }
+
+        // IntelliJ is freaking out, but I think it's fine
+        synchronized (sendMessages) {
+            thisLog = new ArrayList<>(sendMessages.getMessages());
+            sendMessages.clear();
+        }
+
+        synchronized (sendMessages.getSentLock()) {
+            for (SendMessage sendMessage : thisLog) {
+                long timeToWait = sendMessages.timeLeft();
+                if (timeToWait > 0){
+                    sleep(timeToWait);
+                }
+
+                sendMessages.reset();
+
+                sendOneMessage(sendMessage);
+            }
+        }
+    }
+
+    private void sleep(long timeToWait) {
+        try {
+            Thread.sleep(timeToWait);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public int sendMessageWithKeyboard(IUpdate message, List<List<String>> keyboardList, String text) {
+    public void sendMessageWithKeyboard(IUpdate message, List<List<String>> keyboardList, String text) {
         SendMessage sendMessage = new SendMessage(message.getChatId(), text)
                 .parseMode(ParseMode.Markdown)
                 .replyMarkup(defaultKeyboard(keyboardList))
                 .replyToMessageId((int) message.getId());
 
-        return sendTheMessage(sendMessage);
+        sendTheMessage(sendMessage);
     }
 
-    protected Keyboard defaultKeyboard(List<List<String>> keyboardList) {
+    private Keyboard defaultKeyboard(List<List<String>> keyboardList) {
         return new ReplyKeyboardMarkup(getArrayFromKeyboard(keyboardList)).oneTimeKeyboard(true)
                 .resizeKeyboard(true)
                 .selective(true);
@@ -176,7 +236,7 @@ public class TelegramBotAPI implements IBotAPI {
 
         int j = 0;
         for (List<String> nestedList : keyboardList) {
-            array[j++] = nestedList.toArray(new String[nestedList.size()]);
+            array[j++] = nestedList.toArray(new String[0]);
         }
         return array;
     }
