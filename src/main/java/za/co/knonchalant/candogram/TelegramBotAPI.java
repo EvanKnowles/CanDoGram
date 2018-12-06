@@ -270,7 +270,12 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public void sendPhoto(String chatId, byte[] photoUrl) {
-        getBot().execute(new SendPhoto(chatId, photoUrl));
+    public void sendPhoto(String chatId, byte[] photoBytes) {
+        getBot().execute(new SendPhoto(chatId, photoBytes));
+    }
+
+    @Override
+    public void sendAnimation(String chatId, byte[] documentBytes) {
+        getBot().execute(new SendAnimation(chatId, documentBytes));
     }
 }

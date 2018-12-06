@@ -43,5 +43,7 @@ public interface IBotAPI {
 
     void sendPhoto(String chatId, byte[] photoUrl);
 
+    void sendAnimation(String chatId, byte[] photoUrl);
+
     String getName();
 }
