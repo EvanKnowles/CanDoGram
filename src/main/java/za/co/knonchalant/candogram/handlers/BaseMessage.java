@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class BaseMessage {
     private static final String COMMAND_WITH_BOT = "/%s@%s ";
     private static final String COMMAND = "/%s ";
-    private static final String NO_ARGS_COMMAND = "/%s";
+    private static final String NO_ARGS_COMMAND = "/%s ";
 
     private String botName;
     private IBotAPI bot;
@@ -56,10 +56,14 @@ public abstract class BaseMessage {
     }
 
     private String matchCommand(String text, String command) {
-        String theCommand = noargs ? NO_ARGS_COMMAND : COMMAND;
+        String theCommand;
+        if (noargs) {
+            theCommand = NO_ARGS_COMMAND;
+            text += " ";
+        } else theCommand = COMMAND;
         String actual = String.format(theCommand, command);
 
-        boolean matchBasic = text.startsWith(actual) && (text.length() >= actual.length());
+        boolean matchBasic = text.matches(actual) && (text.length() >= actual.length());
         if (matchBasic) {
             return text.substring(actual.length());
         }
