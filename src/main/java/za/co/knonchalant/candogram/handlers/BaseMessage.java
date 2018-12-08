@@ -8,14 +8,15 @@ import za.co.knonchalant.candogram.handlers.exception.CouldNotLookupBeanExceptio
 
 import javax.naming.InitialContext;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by evan on 2016/03/07.
  */
 public abstract class BaseMessage {
-    private static final String COMMAND_WITH_BOT = "/%s@%s ";
-    private static final String COMMAND = "/%s ";
-    private static final String NO_ARGS_COMMAND = "/%s ";
+    private static final String ACTUAL_COMMAND = "/([^\\s@]+).*";
+    private static final Pattern COMPILE = Pattern.compile(ACTUAL_COMMAND);
 
     private String botName;
     private IBotAPI bot;
@@ -56,23 +57,25 @@ public abstract class BaseMessage {
     }
 
     private String matchCommand(String text, String command) {
-        String theCommand;
+        if (!text.startsWith("/")) {
+            return null;
+        }
+
+        Matcher matcher = COMPILE.matcher(text);
+        if (!matcher.matches()) {
+            return null;
+        }
+
+        String extractedCommand = matcher.group(1);
+        if (!extractedCommand.equalsIgnoreCase(command)) {
+            return null;
+        }
+
         if (noargs) {
-            theCommand = NO_ARGS_COMMAND;
-            text += " ";
-        } else theCommand = COMMAND;
-        String actual = String.format(theCommand, command);
-
-        boolean matchBasic = text.matches(actual) && (text.length() >= actual.length());
-        if (matchBasic) {
-            return text.substring(actual.length());
+            return "";
         }
 
-        actual = String.format(COMMAND_WITH_BOT, command, botName);
-        if (text.startsWith(actual) && (text.length() > actual.length())) {
-            return text.substring(actual.length());
-        }
-        return null;
+        return text.substring(text.indexOf(" ")+1);
     }
 
     protected static Object lookupBean(String name) {
