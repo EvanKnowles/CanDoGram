@@ -133,6 +133,8 @@ public class HandlerBot {
             if (iMessageHandler.matches(update)) {
                 PendingResponse handle = iMessageHandler.handle(update);
                 if (handle != null) {
+                    telegramDAO.clearPending(update.getUser().getId(), update.getChatId());
+
                     LOGGER.info(handle.getIdentifier() + " expecting a response");
                     telegramDAO.persistPendingResponse(handle);
                 }
