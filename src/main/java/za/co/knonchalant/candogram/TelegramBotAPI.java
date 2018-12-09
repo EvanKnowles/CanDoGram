@@ -2,6 +2,7 @@ package za.co.knonchalant.candogram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
+import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
@@ -9,26 +10,24 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import okhttp3.OkHttpClient;
-import za.co.knonchalant.candogram.handlers.IInlineHandler;
-import za.co.knonchalant.candogram.handlers.IMessageHandler;
-import za.co.knonchalant.candogram.handlers.IUpdate;
-import za.co.knonchalant.candogram.handlers.User;
+import za.co.knonchalant.candogram.handlers.*;
 import za.co.knonchalant.candogram.handlers.update.TelegramUpdate;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by evan on 2016/04/08.
  */
 public class TelegramBotAPI implements IBotAPI {
-    private static final long ONE_HOUR = 60*15;
-
     private TelegramBot bot;
     private List<IMessageHandler> iMessageHandlers = new ArrayList<>();
     private int offset;
     private IInlineHandler inlineHandler;
     private String name;
+
+    private boolean registeredForUpdates;
 
     private final Map<Long, ChatBacklog> backlog = new HashMap<>();
 
@@ -37,7 +36,7 @@ public class TelegramBotAPI implements IBotAPI {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(ONE_HOUR, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
 
         TelegramBot bot = TelegramBotAdapter.buildCustom(name, client);
@@ -48,6 +47,26 @@ public class TelegramBotAPI implements IBotAPI {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean supportsUpdateListener() {
+        return true;
+    }
+
+    @Override
+    public void registerUpdateListener(IBotUpdatesHandler handler) {
+        if (registeredForUpdates) {
+            return;
+        }
+
+        registeredForUpdates = true;
+
+        bot.setUpdatesListener(updates -> {
+            handler.handle(updates.stream().map(TelegramUpdate::new).collect(Collectors.toList()));
+
+            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        });
     }
 
     private TelegramBot getBot() {
@@ -84,7 +103,7 @@ public class TelegramBotAPI implements IBotAPI {
     @Override
     public List<IUpdate> getUpdates(Integer limit) {
 
-        GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(0));
+        GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(10000));
 
         List<IUpdate> result = new ArrayList<>();
 

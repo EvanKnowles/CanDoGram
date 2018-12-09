@@ -3,10 +3,7 @@ package za.co.knonchalant.candogram;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import za.co.knonchalant.candogram.handlers.IInlineHandler;
-import za.co.knonchalant.candogram.handlers.IMessageHandler;
-import za.co.knonchalant.candogram.handlers.IUpdate;
-import za.co.knonchalant.candogram.handlers.User;
+import za.co.knonchalant.candogram.handlers.*;
 
 import java.util.List;
 
@@ -46,4 +43,8 @@ public interface IBotAPI {
     void sendAnimation(String chatId, byte[] photoUrl);
 
     String getName();
+
+    boolean supportsUpdateListener();
+
+    void registerUpdateListener(IBotUpdatesHandler handler);
 }
