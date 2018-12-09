@@ -69,6 +69,12 @@ public class TelegramBotAPI implements IBotAPI {
         });
     }
 
+    @Override
+    public void unregisterUpdateListener() {
+        registeredForUpdates = false;
+        bot.removeGetUpdatesListener();
+    }
+
     private TelegramBot getBot() {
         return bot;
     }

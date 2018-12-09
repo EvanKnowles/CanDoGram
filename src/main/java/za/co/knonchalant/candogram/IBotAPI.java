@@ -47,4 +47,6 @@ public interface IBotAPI {
     boolean supportsUpdateListener();
 
     void registerUpdateListener(IBotUpdatesHandler handler);
+
+    void unregisterUpdateListener();
 }

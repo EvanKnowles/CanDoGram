@@ -101,5 +101,12 @@ public class PollBot implements ShutdownNotify, IBot {
     public void notifyShutdown() {
         LOGGER.info("Telegram server is shutting down.");
         running = false;
+
+        for (Bots bot : bots) {
+            for (IBotAPI api : bot.getApis()) {
+                api.unregisterUpdateListener();
+            }
+
+        }
     }
 }
