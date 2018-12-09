@@ -51,7 +51,7 @@ public class TelegramBotAPI implements IBotAPI {
 
     @Override
     public boolean supportsUpdateListener() {
-        return true;
+        return false;
     }
 
     @Override
@@ -112,6 +112,9 @@ public class TelegramBotAPI implements IBotAPI {
         GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(10000));
 
         List<IUpdate> result = new ArrayList<>();
+        if (updates == null || updates.updates() == null) {
+            return result;
+        }
 
         for (Update update : updates.updates()) {
             if (update.inlineQuery() != null) {

@@ -75,6 +75,10 @@ public abstract class BaseMessage {
             return "";
         }
 
+        if (!text.contains(" ")) {
+            return "";
+        }
+
         return text.substring(text.indexOf(" ")+1);
     }
 
