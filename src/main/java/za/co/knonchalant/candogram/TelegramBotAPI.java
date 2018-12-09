@@ -13,7 +13,10 @@ import okhttp3.OkHttpClient;
 import za.co.knonchalant.candogram.handlers.*;
 import za.co.knonchalant.candogram.handlers.update.TelegramUpdate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -35,8 +38,8 @@ public class TelegramBotAPI implements IBotAPI {
         this.name = name;
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
                 .build();
 
         TelegramBot bot = TelegramBotAdapter.buildCustom(name, client);
@@ -196,8 +199,24 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     private void sendOneMessage(SendMessage sendMessage) {
-        SendResponse execute = bot.execute(sendMessage);
+        boolean sent = false;
+        SendResponse execute = null;
+        int tries = 0;
+        while (!sent) {
+            try {
+                execute = bot.execute(sendMessage);
+            } catch (Exception ex) {
+                tries++;
+                if (tries == 5) {
+                    System.out.println("I tried super hard to send a message, but too many exceptions.");
+                    ex.printStackTrace();
+                    return;
+                }
 
+                sleep(50);
+            }
+            sent = true;
+        }
         if (!execute.isOk()) {
             System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
             return;
@@ -223,7 +242,7 @@ public class TelegramBotAPI implements IBotAPI {
         synchronized (sendMessages.getSentLock()) {
             for (SendMessage sendMessage : thisLog) {
                 long timeToWait = sendMessages.timeLeft();
-                if (timeToWait > 0){
+                if (timeToWait > 0) {
                     sleep(timeToWait);
                 }
 
