@@ -201,22 +201,18 @@ public class TelegramBotAPI implements IBotAPI {
     private void sendOneMessage(SendMessage sendMessage) {
         boolean sent = false;
         SendResponse execute = null;
-        int tries = 0;
         while (!sent) {
             try {
                 execute = bot.execute(sendMessage);
+                sent = true;
             } catch (Exception ex) {
-                tries++;
-                if (tries == 5) {
-                    System.out.println("I tried super hard to send a message, but too many exceptions.");
-                    ex.printStackTrace();
-                    return;
-                }
 
-                sleep(50);
+                // seems like there's nothing we can do. if we try re-send the message, we may just get the same message sent again.
+                // we'll try just not break the process
+                return;
             }
-            sent = true;
         }
+
         if (!execute.isOk()) {
             System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
             return;

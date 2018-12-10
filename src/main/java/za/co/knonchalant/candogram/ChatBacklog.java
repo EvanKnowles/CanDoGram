@@ -15,7 +15,7 @@ public class ChatBacklog {
         if (lastSent == null) {
             return 0;
         }
-        long time = lastSent.getTime() + 1000;
+        long time = lastSent.getTime() + 3000;
         Date date = new Date();
 
         return time - date.getTime();
