@@ -29,13 +29,15 @@ public class TelegramBotAPI implements IBotAPI {
     private int offset;
     private IInlineHandler inlineHandler;
     private String name;
+    private boolean throttle;
 
     private boolean registeredForUpdates;
 
     private final Map<Long, ChatBacklog> backlog = new HashMap<>();
 
-    public TelegramBotAPI(String name, String apiKey) {
+    public TelegramBotAPI(String name, String apiKey, boolean throttle) {
         this.name = name;
+        this.throttle = throttle;
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
@@ -45,6 +47,10 @@ public class TelegramBotAPI implements IBotAPI {
         TelegramBot bot = TelegramBotAdapter.buildCustom(name, client);
         this.bot = TelegramBotAdapter.build(apiKey);
         bot.execute(new GetMe());
+    }
+
+    public TelegramBotAPI(String name, String apiKey) {
+       this(name, apiKey, true);
     }
 
     @Override
@@ -112,7 +118,7 @@ public class TelegramBotAPI implements IBotAPI {
     @Override
     public List<IUpdate> getUpdates(Integer limit) {
 
-        GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(10000));
+        GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(0));
 
         List<IUpdate> result = new ArrayList<>();
         if (updates == null || updates.updates() == null) {
@@ -183,7 +189,7 @@ public class TelegramBotAPI implements IBotAPI {
         if (!backlog.containsKey(chatId)) {
             synchronized (backlog) {
                 if (!backlog.containsKey(chatId)) {
-                    backlog.put(chatId, new ChatBacklog());
+                    backlog.put(chatId, new ChatBacklog(throttle));
                 }
             }
         }
