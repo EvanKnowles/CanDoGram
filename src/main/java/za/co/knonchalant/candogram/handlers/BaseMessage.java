@@ -3,7 +3,7 @@ package za.co.knonchalant.candogram.handlers;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import za.co.knonchalant.candogram.IBotAPI;
+import za.co.knonchalant.candogram.api.IBotAPI;
 import za.co.knonchalant.candogram.handlers.exception.CouldNotLookupBeanException;
 
 import javax.naming.InitialContext;
@@ -19,18 +19,18 @@ public abstract class BaseMessage {
     private static final Pattern COMPILE = Pattern.compile(ACTUAL_COMMAND);
 
     private String botName;
-    private IBotAPI bot;
+    private IBotAPI<IUpdate> bot;
     private boolean noargs;
 
     public BaseMessage() {
     }
 
-    public BaseMessage(String botName, IBotAPI bot) {
+    public BaseMessage(String botName, IBotAPI<IUpdate> bot) {
         this.botName = botName;
         this.bot = bot;
     }
 
-    public BaseMessage(String botName, IBotAPI bot, boolean noargs) {
+    public BaseMessage(String botName, IBotAPI<IUpdate> bot, boolean noargs) {
         this.botName = botName;
         this.bot = bot;
         this.noargs = noargs;
@@ -40,7 +40,7 @@ public abstract class BaseMessage {
         return getBot().typing(update);
     }
 
-    protected IBotAPI getBot() {
+    protected IBotAPI<IUpdate> getBot() {
         return bot;
     }
 

@@ -1,6 +1,7 @@
 package za.co.knonchalant.candogram;
 
 import com.google.gson.Gson;
+import za.co.knonchalant.candogram.api.IBotAPI;
 import za.co.knonchalant.candogram.dao.PendingResponseDAO;
 import za.co.knonchalant.candogram.domain.BaseDetail;
 import za.co.knonchalant.candogram.domain.PendingResponse;
@@ -21,6 +22,13 @@ public class HandlerBot {
 
     @EJB
     PendingResponseDAO telegramDAO;
+
+    public HandlerBot() {
+    }
+
+    public HandlerBot(PendingResponseDAO telegramDAO) {
+        this.telegramDAO = telegramDAO;
+    }
 
     @Asynchronous
     public void handle(IBotAPI bot, IUpdate update) {

@@ -1,4 +1,4 @@
-package za.co.knonchalant.candogram;
+package za.co.knonchalant.candogram.api;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
@@ -7,7 +7,7 @@ import za.co.knonchalant.candogram.handlers.*;
 
 import java.util.List;
 
-public interface IBotAPI {
+public interface IBotAPI<T extends IUpdate> {
     List<IMessageHandler> getHandlers();
 
     void setInlineHandler(IInlineHandler handler);
@@ -18,11 +18,11 @@ public interface IBotAPI {
 
     void addHandlers(List<IMessageHandler> handler);
 
-    List<IUpdate> getUpdates(Integer limit);
+    List<T> getUpdates(Integer limit);
 
-    void sendMessage(IUpdate message, String text, Object... args);
+    void sendMessage(T message, String text, Object... args);
 
-    void sendMessage(IUpdate message, String text);
+    void sendMessage(T message, String text);
 
     void sendMessageWithKeyboard(IUpdate update, List<List<String>> keyboardList, String text);
 
@@ -38,7 +38,7 @@ public interface IBotAPI {
 
     void sendInlinePhoto(String inlineId, String photoUrl, String thumbnailUrl, int width, int height);
 
-    void sendPhoto(String chatId, byte[] photoUrl);
+    void sendPhoto(T chat, byte[] photoUrl);
 
     void sendAnimation(String chatId, byte[] photoUrl);
 

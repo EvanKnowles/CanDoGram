@@ -1,4 +1,4 @@
-package za.co.knonchalant.candogram;
+package za.co.knonchalant.candogram.api;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
@@ -10,6 +10,7 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import okhttp3.OkHttpClient;
+import za.co.knonchalant.candogram.ChatBacklog;
 import za.co.knonchalant.candogram.handlers.*;
 import za.co.knonchalant.candogram.handlers.update.TelegramUpdate;
 
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * Created by evan on 2016/04/08.
  */
-public class TelegramBotAPI implements IBotAPI {
+public class TelegramBotAPI implements IBotAPI<TelegramUpdate> {
     private TelegramBot bot;
     private List<IMessageHandler> iMessageHandlers = new ArrayList<>();
     private int offset;
@@ -116,11 +117,11 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public List<IUpdate> getUpdates(Integer limit) {
+    public List<TelegramUpdate> getUpdates(Integer limit) {
 
         GetUpdatesResponse updates = bot.execute(new GetUpdates().limit(limit).offset(offset).timeout(0));
 
-        List<IUpdate> result = new ArrayList<>();
+        List<TelegramUpdate> result = new ArrayList<>();
         if (updates == null || updates.updates() == null) {
             return result;
         }
@@ -136,13 +137,13 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public void sendMessage(IUpdate message, String text, Object... args) {
+    public void sendMessage(TelegramUpdate message, String text, Object... args) {
         sendTheMessage(new SendMessage(message.getChatId(), String.format(text, args)).parseMode(ParseMode.Markdown));
     }
 
 
     @Override
-    public void sendMessage(IUpdate message, String text) {
+    public void sendMessage(TelegramUpdate message, String text) {
         sendTheMessage(new SendMessage(message.getChatId(), text).parseMode(ParseMode.Markdown));
     }
 
@@ -319,8 +320,8 @@ public class TelegramBotAPI implements IBotAPI {
     }
 
     @Override
-    public void sendPhoto(String chatId, byte[] photoBytes) {
-        getBot().execute(new SendPhoto(chatId, photoBytes));
+    public void sendPhoto(TelegramUpdate chat, byte[] photoBytes) {
+        getBot().execute(new SendPhoto(chat.getChatId(), photoBytes));
     }
 
     @Override

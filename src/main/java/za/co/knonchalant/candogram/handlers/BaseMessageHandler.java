@@ -1,6 +1,6 @@
 package za.co.knonchalant.candogram.handlers;
 
-import za.co.knonchalant.candogram.IBotAPI;
+import za.co.knonchalant.candogram.api.IBotAPI;
 
 /**
  * Created by evan on 2016/03/11.
