@@ -3,6 +3,7 @@ package za.co.knonchalant.candogram.api;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import za.co.knonchalant.candogram.IBotAPI;
 import za.co.knonchalant.candogram.handlers.*;
 
 import java.util.ArrayList;

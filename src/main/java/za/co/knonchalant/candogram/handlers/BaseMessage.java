@@ -3,7 +3,7 @@ package za.co.knonchalant.candogram.handlers;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import za.co.knonchalant.candogram.api.IBotAPI;
+import za.co.knonchalant.candogram.IBotAPI;
 import za.co.knonchalant.candogram.handlers.exception.CouldNotLookupBeanException;
 
 import javax.naming.InitialContext;

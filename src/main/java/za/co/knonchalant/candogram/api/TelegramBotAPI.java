@@ -1,7 +1,6 @@
 package za.co.knonchalant.candogram.api;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.TelegramBotAdapter;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
@@ -11,6 +10,7 @@ import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import okhttp3.OkHttpClient;
 import za.co.knonchalant.candogram.ChatBacklog;
+import za.co.knonchalant.candogram.IBotAPI;
 import za.co.knonchalant.candogram.handlers.*;
 import za.co.knonchalant.candogram.handlers.update.TelegramUpdate;
 
@@ -39,14 +39,14 @@ public class TelegramBotAPI implements IBotAPI<TelegramUpdate> {
     public TelegramBotAPI(String name, String apiKey, boolean throttle) {
         this.name = name;
         this.throttle = throttle;
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .build();
 
-        TelegramBot bot = TelegramBotAdapter.buildCustom(name, client);
-        this.bot = TelegramBotAdapter.build(apiKey);
+        this.bot = new TelegramBot.Builder(apiKey).okHttpClient(client).build();
         bot.execute(new GetMe());
     }
 
@@ -172,7 +172,7 @@ public class TelegramBotAPI implements IBotAPI<TelegramUpdate> {
 
     @Override
     public void updateMessage(Long chatId, String message, Integer messageId, InlineKeyboardMarkup keyboard) {
-        EditMessageReplyMarkup sendMessage = new EditMessageReplyMarkup(chatId, messageId, message);
+        EditMessageReplyMarkup sendMessage = new EditMessageReplyMarkup(chatId, messageId);
         if (keyboard != null) {
             sendMessage = sendMessage.replyMarkup(keyboard);
         }

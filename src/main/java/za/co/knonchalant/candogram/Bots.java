@@ -1,6 +1,5 @@
 package za.co.knonchalant.candogram;
 
-import za.co.knonchalant.candogram.api.IBotAPI;
 import za.co.knonchalant.candogram.handlers.IInlineHandler;
 import za.co.knonchalant.candogram.handlers.IMessageHandler;
 import za.co.knonchalant.candogram.handlers.IUpdate;

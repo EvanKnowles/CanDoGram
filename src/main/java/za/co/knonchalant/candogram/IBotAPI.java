@@ -1,4 +1,4 @@
-package za.co.knonchalant.candogram.api;
+package za.co.knonchalant.candogram;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
