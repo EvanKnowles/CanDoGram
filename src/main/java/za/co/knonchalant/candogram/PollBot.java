@@ -1,6 +1,5 @@
 package za.co.knonchalant.candogram;
 
-import za.co.knonchalant.candogram.handlers.IBotUpdatesHandler;
 import za.co.knonchalant.candogram.handlers.IUpdate;
 
 import javax.ejb.*;
@@ -21,12 +20,23 @@ public class PollBot implements ShutdownNotify, IBot {
 
     private List<Bots> bots;
 
+    public PollBot(HandlerBot handlerBot) {
+        this.handlerBot = handlerBot;
+    }
+
+    public PollBot() {
+
+
+    }
+
     @Asynchronous
     public void start(List<Bots> bots) {
         this.bots = bots;
         while (running) {
             for (Bots bot : bots) {
-                processBot(bot);
+                if (bot != null) {
+                    processBot(bot);
+                }
             }
 
             sleep();
@@ -47,8 +57,7 @@ public class PollBot implements ShutdownNotify, IBot {
                     bot.registerUpdateListener(updates -> {
                         process(bot, updates);
                     });
-                }
-                else {
+                } else {
                     Collection<IUpdate> updates = onlyLast(bot.getUpdates(100));
 
                     process(bot, updates);

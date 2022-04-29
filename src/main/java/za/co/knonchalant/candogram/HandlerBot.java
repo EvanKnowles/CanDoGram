@@ -22,6 +22,13 @@ public class HandlerBot {
     @EJB
     PendingResponseDAO telegramDAO;
 
+    public HandlerBot() {
+    }
+
+    public HandlerBot(PendingResponseDAO telegramDAO) {
+        this.telegramDAO = telegramDAO;
+    }
+
     @Asynchronous
     public void handle(IBotAPI bot, IUpdate update) {
         if (update.isInline()) {

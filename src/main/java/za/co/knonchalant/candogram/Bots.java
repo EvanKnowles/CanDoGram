@@ -2,6 +2,7 @@ package za.co.knonchalant.candogram;
 
 import za.co.knonchalant.candogram.handlers.IInlineHandler;
 import za.co.knonchalant.candogram.handlers.IMessageHandler;
+import za.co.knonchalant.candogram.handlers.IUpdate;
 
 import java.util.List;
 
@@ -50,9 +51,9 @@ public class Bots {
         }
     }
 
-    public void sendPhoto(long chatId, byte[] file) {
+    public void sendPhoto(IUpdate chatId, byte[] file) {
         for (IBotAPI api : apis) {
-            api.sendPhoto(String.valueOf(chatId), file);
+            api.sendPhoto(chatId, file);
         }
     }
 
