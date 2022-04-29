@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>za.co.knonchalant.candogram</artifactId>
-    <groupId>CanDoGram</groupId>
+    <groupId>za.co.knonchalant.candogram</groupId>
+    <artifactId>CanDoGram</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
