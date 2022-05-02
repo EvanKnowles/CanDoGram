@@ -7,7 +7,7 @@
     <groupId>za.co.knonchalant.candogram</groupId>
     <artifactId>CanDoGram</artifactId>
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
