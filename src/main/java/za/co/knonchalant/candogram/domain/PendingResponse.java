@@ -3,10 +3,7 @@ package za.co.knonchalant.candogram.domain;
 import com.google.gson.Gson;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by evan on 2016/03/08.
@@ -101,7 +98,7 @@ public class PendingResponse {
         return this;
     }
 
-    @Column(columnDefinition = "LONGTEXT", length = 10_000)
+    @Lob
     public String getDetails() {
         return details;
     }
