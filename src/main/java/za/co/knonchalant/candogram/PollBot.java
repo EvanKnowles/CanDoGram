@@ -82,7 +82,7 @@ public class PollBot implements ShutdownNotify, IBot {
                 continue;
             }
 
-            if (update.getUser() == null || update.getUser) {
+            if (update.getUser() == null) {
                 System.out.println("Update has no user! " + update);
                 continue;
             } 
