@@ -34,7 +34,13 @@ public class TelegramUpdate implements IUpdate {
             return update.callbackQuery().from();
         }
 
-        return update.message() != null ? update.message().from() : update.inlineQuery().from();
+        if (update.message() != null) {
+            return update.message().from();
+        }
+        if (update.inlineQuery() != null) {
+            return update.inlineQuery().from();
+        }
+        return null;
     }
 
     @Override
