@@ -26,6 +26,9 @@ public class TelegramReply extends TelegramUpdate
   @Override
   public User getUser()
   {
+    if (replyTo.from() == null) {
+      return null;
+    }
     return new User(replyTo.from().id(), replyTo.from().username(), replyTo.from().firstName(), replyTo.from().lastName());
   }
 
