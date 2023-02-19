@@ -1,6 +1,7 @@
 package za.co.knonchalant.candogram.handlers.update;
 
 import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import za.co.knonchalant.candogram.domain.Location;
 import za.co.knonchalant.candogram.handlers.IUpdate;
@@ -100,6 +101,13 @@ public class TelegramUpdate implements IUpdate {
             return null;
         }
         return new Location(location.latitude(), location.longitude());
+    }
+
+    @Override
+    public TelegramUpdate getReplyTo()
+    {
+        Message replyTo = update.message().replyToMessage();
+        return new TelegramReply(replyTo);
     }
 
     @Override

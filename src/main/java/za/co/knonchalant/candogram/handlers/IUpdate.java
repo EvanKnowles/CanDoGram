@@ -12,6 +12,7 @@ public interface IUpdate {
     public long getChatId();
     public String getTitle();
     public Location getLocation();
+    public IUpdate getReplyTo();
 
     public boolean isInline();
 
