@@ -112,6 +112,9 @@ public class TelegramUpdate implements IUpdate {
     @Override
     public TelegramUpdate getReplyTo()
     {
+        if (update.message() == null || update.message().replyToMessage() == null) {
+            return null;
+        }
         Message replyTo = update.message().replyToMessage();
         return new TelegramReply(replyTo);
     }
