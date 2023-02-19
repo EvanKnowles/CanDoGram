@@ -25,6 +25,9 @@ public class TelegramUpdate implements IUpdate {
     @Override
     public User getUser() {
         com.pengrad.telegrambot.model.User user = getUserFromUpdate();
+        if (user == null) {
+            return null;
+        }
 
         return new User(user.id(), user.username(), user.firstName(), user.lastName());
     }
