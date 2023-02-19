@@ -1,7 +1,6 @@
 package za.co.knonchalant.candogram.handlers.update;
 
 import za.co.knonchalant.candogram.domain.Location;
-import za.co.knonchalant.candogram.handlers.IUpdate;
 import za.co.knonchalant.candogram.handlers.User;
 
 import com.pengrad.telegrambot.model.Chat;
@@ -90,5 +89,11 @@ public class TelegramReply extends TelegramUpdate
   public boolean skip()
   {
     return false;
+  }
+
+  @Override
+  public long getSentAt()
+  {
+    return replyTo.date();
   }
 }

@@ -10,6 +10,7 @@ public interface IUpdate {
     public String getInlineId();
     public long getMessageId();
     public long getChatId();
+    public long getSentAt();
     public String getTitle();
     public Location getLocation();
     public IUpdate getReplyTo();

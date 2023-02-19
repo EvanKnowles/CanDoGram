@@ -82,4 +82,10 @@ public class DiscordUpdate implements IUpdate {
     public MessageChannel getChannel() {
         return msg.getChannel();
     }
+
+    @Override
+    public long getSentAt()
+    {
+        throw new RuntimeException("Not implemented");
+    }
 }
