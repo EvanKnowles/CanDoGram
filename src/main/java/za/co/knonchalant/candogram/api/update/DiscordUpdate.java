@@ -64,6 +64,12 @@ public class DiscordUpdate implements IUpdate {
     }
 
     @Override
+    public IUpdate getReplyTo()
+    {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
     public boolean isInline() {
         return false;
     }
