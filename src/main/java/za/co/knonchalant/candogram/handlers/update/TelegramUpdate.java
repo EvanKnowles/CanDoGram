@@ -129,5 +129,11 @@ public class TelegramUpdate implements IUpdate {
         return (update.editedMessage() != null);
     }
 
+    public Video getVideo() {
+        if (update.video() == null) {
+            return null;
+        }
+        return update.video();
+    }
 
 }
