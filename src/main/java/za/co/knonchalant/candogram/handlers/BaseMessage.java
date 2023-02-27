@@ -40,7 +40,7 @@ public abstract class BaseMessage {
         return getBot().typing(update);
     }
 
-    protected IBotAPI<IUpdate> getBot() {
+    public IBotAPI<IUpdate> getBot() {
         return bot;
     }
 
