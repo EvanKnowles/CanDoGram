@@ -51,7 +51,7 @@ public class TelegramBotAPI implements IBotAPI<TelegramUpdate> {
     }
 
     public TelegramBotAPI(String name, String apiKey) {
-       this(name, apiKey, true);
+        this(name, apiKey, true);
     }
 
     @Override
@@ -180,6 +180,15 @@ public class TelegramBotAPI implements IBotAPI<TelegramUpdate> {
         BaseResponse execute = bot.execute(sendMessage);
         if (!execute.isOk()) {
             System.out.println("Sending message failed: " + execute.errorCode() + " - " + execute.description());
+        }
+    }
+
+    @Override
+    public void deleteMessage(long chatId, int messageId) {
+        DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
+        BaseResponse execute = bot.execute(deleteMessage);
+        if (!execute.isOk()) {
+            System.out.println("Deleting message failed: " + execute.errorCode() + " - " + execute.description());
         }
     }
 

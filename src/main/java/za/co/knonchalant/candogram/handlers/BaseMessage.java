@@ -56,6 +56,18 @@ public abstract class BaseMessage {
         getBot().sendMessageWithKeyboard(update, keyboardList, text);
     }
 
+    protected void deleteMessage(IUpdate message) {
+        int messageId = 0;
+        try {
+            messageId = Math.toIntExact(message.getMessageId());
+        } catch (ArithmeticException e) {
+            System.err.println("Unable to convert long messageId to int messageId without loss of precision");
+            e.printStackTrace();
+            return;
+        }
+        getBot().deleteMessage(message.getChatId(), messageId);
+    }
+
     private String matchCommand(String text, String command) {
         if (!text.startsWith("/")) {
             return null;

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import za.co.knonchalant.candogram.api.update.DiscordUpdate;
 import za.co.knonchalant.candogram.handlers.*;
 
@@ -45,6 +46,11 @@ public class DiscordBotAPI extends BaseBotAPI<DiscordUpdate> {
     @Override
     public void sendMessage(DiscordUpdate message, String text) {
         message.getChannel().sendMessage(text).queue();
+    }
+
+    @Override
+    public void deleteMessage(long chatId, int messageId) {
+        throw new RuntimeException("deleteMessage not implemented");
     }
 
     @Override

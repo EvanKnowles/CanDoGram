@@ -24,6 +24,8 @@ public interface IBotAPI<T extends IUpdate> {
 
     void sendMessage(T message, String text);
 
+    void deleteMessage(long chatId, int messageId);
+
     void sendMessageWithKeyboard(IUpdate update, List<List<String>> keyboardList, String text);
 
     boolean typing(IUpdate update);
